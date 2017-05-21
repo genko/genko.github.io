@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="lib.js"></script>
+		<script type="text/javascript" src="iota-browser.js"></script>
+		<script>
+			window.onload = function () {
+				var iota = require('iota-compiler');
+				var $ = document.querySelectorAll.bind(document);
+
+				var inputField = $('#input')[0];
+				var astField = $('#ast')[0];
+				var jsField = $('#js')[0];
+				var resultField = $('#result')[0];
+
+				var wrapWithFunctionCheckbox = $('#wrapWithFunctionCheckbox')[0];
+				var useProxyCheckbox = $('#useProxyCheckbox')[0];
+				var functionNameField = $('#functionNameField')[0];
+
+				window.console.log = function () {
+					var args = Array.prototype.slice.call(arguments);
+					var message = args.join(' ');
+					if (resultField.value === "<no output>") {
+						resultField.value = message + "\n";
+					} else {
+						resultField.value += message + '\n';
+					}
+				};
+
+				function update () {
+					functionNameField.disabled = !wrapWithFunctionCheckbox.checked;
+					
+					resultField.value = "<no output>";
+					try {
+						astField.value = JSON.stringify(iota.parse(inputField.value), null, 4);
+
+						jsField.value = iota.compile(inputField.value, {
+							wrapWithFunction: wrapWithFunctionCheckbox.checked,
+							useProxy: useProxyCheckbox.checked,
+							functionName: functionNameField.value
+						});
+
+						try {
+							var compiled = iota.compile(inputField.value);
+							if (compiled === '') {
+								console.log('=>');
+							} else {
+								var ioVal = eval(compiled);
+								var type = _io.getTypeOf(ioVal);
+								console.log('=>', _io.unwrapIoValue(ioVal) === undefined ? 'undefined' : _io.unwrapIoValue(ioVal), '(' + type + ')');
+							}
+						} catch(e) {
+							resultField.value = e;
+						}
+					} catch (e) {
+						astField.value = e;
+						jsField.value = "";
+						console.log('parse error');
+					}
+				}
+
+				inputField.addEventListener("keyup", update);
+				wrapWithFunctionCheckbox.addEventListener("change", update);
+				useProxyCheckbox.addEventListener("change", update);
+				functionNameField.addEventListener("keyup", update);
+
+				inputField.value = "fact := method(n, if (n == 0, 1, n * fact (n - 1)))\nwriteln(fact(5))";
+				functionNameField.value = "plan";
+
+				update();
+
+			};
+		</script>
+		<title>Iota Demo</title>
+	</head>
+	<body>
+		<h1>Iota Demo</h1>
+		<p>Iota is a source-to-source compiler that translates <a href="http://iolanguage.org/">Io language</a> code into JavaScript.</p>
+		<textarea id="input" rows="5" cols="30" placeholder="Your Io code here"></textarea>
+		<div id="options">
+			<input type="checkbox" id="wrapWithFunctionCheckbox"/>
+			<label for="wrapWithFunctionCheckbox">Wrap with function</label>
+			<input type="text" id="functionNameField"/>
+			<input type="checkbox" id="useProxyCheckbox"/>
+			<label for="useProxyCheckbox">Use proxy</label>
+		</div>
+		<textarea id="ast" readonly rows="15" cols="30" placeholder="Compiled JavaScript"></textarea>
+		<br/>
+		<textarea id="js" readonly rows="10" cols="30" placeholder="Syntax Tree"></textarea>
+		<br/>
+		<textarea id="result" readonly rows="4" cols="30" placeholder="Result"></textarea>
+		<h6>Check out the project page <a href="https://github.com/dariusf/iota">here</a>.</h6>
+	</body>
+</html>
