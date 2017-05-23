@@ -7992,7 +7992,7 @@ module.exports={
   "_args": [
     [
       "escodegen@~1.3.2",
-      "/home/oni/jet/iota"
+      "/home/oni/iota"
     ]
   ],
   "_from": "escodegen@>=1.3.2 <1.4.0",
@@ -8021,7 +8021,7 @@ module.exports={
   "_shasum": "f024016f5a88e046fd12005055e939802e6c5f23",
   "_shrinkwrap": null,
   "_spec": "escodegen@~1.3.2",
-  "_where": "/home/oni/jet/iota",
+  "_where": "/home/oni/iota",
   "bin": {
     "escodegen": "./bin/escodegen.js",
     "esgenerate": "./bin/esgenerate.js"
@@ -13129,7 +13129,7 @@ var _io = (function () {
 		setSlot: function (slot, value) {
 			slot = unwrapIoValue(slot);
 			this.slots[slot] = value;
-			return IoNil;
+			return this.slots[slot];
 		},
 		updateSlot: function (slot, value) {
 			if (this.slots[slot]) {
@@ -13144,8 +13144,8 @@ var _io = (function () {
 		proto: function () {
 			return this.proto;
 		},
-		writeln: function (thing) {
-			console.log(unwrapIoValue(thing.send('toIoString')));
+		println: function () {
+			console.log(unwrapIoValue(this.send('toIoString')));
 			return IoNil;
 		},
 		method: function () {
@@ -13224,6 +13224,9 @@ var _io = (function () {
 		charAt: function (n) {
 			n = unwrapIoValue(n);
 			return IoStringWrapper(unwrapIoValue(this).charAt(n));
+		},
+		"+": function (other) {
+			return IoStringWrapper(unwrapIoValue(this) + unwrapIoValue(other));
 		},
 		toIoString: function () {
 			return this;
@@ -14201,7 +14204,7 @@ function Chain (left, op, right) {
 	var result = new ast.Chain([left, op]);
 	// TODO Should this be a chain instead? .push(new ast.Chain([right]))?
 	// should be sorted out when the exact type of the args list is determined
-	op.getArguments().push([right]);
+	//op.getArguments().push([right]); //Commented this out, was arguments added to chain without using parentethis
 	return result;
 }
 

@@ -65,7 +65,7 @@
 				useProxyCheckbox.addEventListener("change", update);
 				functionNameField.addEventListener("keyup", update);
 
-				inputField.value = "fact := method(n, if (n == 0, 1, n * fact (n - 1)))\nwriteln(fact(5))";
+				inputField.value = "fact := method(n, if(n ==(0), 1, n *(fact(n -(1)))))\nfact(5) println";
 				functionNameField.value = "plan";
 
 				update();
@@ -90,6 +90,6 @@
 		<textarea id="js" readonly rows="10" cols="30" placeholder="Syntax Tree"></textarea>
 		<br/>
 		<textarea id="result" readonly rows="4" cols="30" placeholder="Result"></textarea>
-		<h6>Check out the project page <a href="https://github.com/dariusf/iota">here</a>.</h6>
+		<h6>Check out the project page <a href="https://github.com/genko/iota">here</a>.</h6>
 	</body>
 </html>
