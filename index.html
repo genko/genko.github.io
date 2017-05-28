@@ -2,11 +2,11 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		<script type="text/javascript" src="src/lib.js"></script>
-		<script type="text/javascript" src="iota-browser.js"></script>
+		<script type="text/javascript" src="lib.js"></script>
+		<script type="text/javascript" src="lio-browser.js"></script>
 		<script>
 			window.onload = function () {
-				var iota = require('iota-compiler');
+				var lio = require('lio');
 				var $ = document.querySelectorAll.bind(document);
 
 				var inputField = $('#input')[0];
@@ -33,16 +33,16 @@
 					
 					resultField.value = "<no output>";
 					try {
-						astField.value = JSON.stringify(iota.parse(inputField.value), null, 4);
+						astField.value = JSON.stringify(lio.parse(inputField.value), null, 4);
 
-						jsField.value = iota.compile(inputField.value, {
+						jsField.value = lio.compile(inputField.value, {
 							wrapWithFunction: wrapWithFunctionCheckbox.checked,
 							useProxy: useProxyCheckbox.checked,
 							functionName: functionNameField.value
 						});
 
 						try {
-							var compiled = iota.compile(inputField.value);
+							var compiled = lio.compile(inputField.value);
 							if (compiled === '') {
 								console.log('=>');
 							} else {
@@ -65,18 +65,18 @@
 				useProxyCheckbox.addEventListener("change", update);
 				functionNameField.addEventListener("keyup", update);
 
-				inputField.value = "fact := method(n, if(n ==(0), 1, n *(fact(n -(1)))))\nfact(5) println";
+				inputField.value = "fact := method(n, if(n ==(0), 1, n *(fact(n -(1)))))\nfact(5) println()";
 				functionNameField.value = "plan";
 
 				update();
 
 			};
 		</script>
-		<title>Iota Demo</title>
+		<title>Lio Demo</title>
 	</head>
 	<body>
-		<h1>Iota Demo</h1>
-		<p>Iota is a source-to-source compiler that translates <a href="http://iolanguage.org/">Io language</a> code into JavaScript.</p>
+		<h1>Lio Demo</h1>
+		<p>Lio is a source-to-source compiler that translates <a href="http://iolanguage.org/">Io language</a> code into JavaScript.</p>
 		<textarea id="input" rows="5" cols="30" placeholder="Your Io code here"></textarea>
 		<div id="options">
 			<input type="checkbox" id="wrapWithFunctionCheckbox"/>
@@ -90,6 +90,6 @@
 		<textarea id="js" readonly rows="10" cols="30" placeholder="Syntax Tree"></textarea>
 		<br/>
 		<textarea id="result" readonly rows="4" cols="30" placeholder="Result"></textarea>
-		<h6>Check out the project page <a href="https://github.com/genko/iota">here</a>.</h6>
+		<h6>Check out the project page <a href="https://github.com/genko/lio">here</a>.</h6>
 	</body>
 </html>
